@@ -1,0 +1,40 @@
+<tool id="interactive_tool_geoc-gxit" tool_type="interactive" name="geoc-gxit" version="1.0.0">
+    <description>Tuto tool from geoc</description>
+    <requirements>
+        <container type="docker">tuto-gxit-01:latest</container>
+        <!-- <container type="docker">emetabohub/geoc-gxit:1.0.0</container> -->
+    </requirements>
+    <entry_points>
+        <entry_point name="geoc-gxit visualisation of $infile.display_name" requires_domain="True">
+            <port>8765</port>
+            <url>/</url>
+        </entry_point>
+    </entry_points>
+    <command><![CDATA[
+        R -e "shiny::runApp('/gxit', host='0.0.0.0', port=8765)" 2>&1 > "/var/log/tuto-gxit-01.log"
+    ]]>
+    </command>
+    <inputs>
+        <param name="infile" type="data" format="binary" label="An tar.gz file containing nmr spectra"/>
+    </inputs>
+    <outputs>
+        <data name="file_output" format="txt" />
+    </outputs>
+    <tests>
+    </tests>
+    <help>
+<![CDATA[
+
+]]>
+    </help>
+    <citations>
+       <citation type="bibtex">
+       @misc{
+            author       = {Lain Pavot - lain.pavot@inrae.fr },
+            title        = {{geoc-gxit -  A tool to visualise tsv/csv files }},
+            publisher    = {INRAE},
+            url          = {}
+        }
+    }</citation>
+    </citations>
+</tool>
