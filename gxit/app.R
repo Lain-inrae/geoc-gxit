@@ -66,6 +66,14 @@ ui <- fluidPage(
         ),
         selected=","
       ),
+      radioButtons(
+        "out_quote", "Quoting?",
+        choices=c(
+          Yes="TRUE",
+          No="FALSE"
+        ),
+        selected=FALSE
+      ),
       downloadButton("downloadData", "Download")
     ),
 
@@ -73,7 +81,7 @@ ui <- fluidPage(
   )
 )
 
-server_upload <- function(input) {
+server_upload_handler <- function(input) {
   renderTable({
 
     # input$uploaded_file will be NULL initially. After the user selects
@@ -113,21 +121,16 @@ server_upload <- function(input) {
 
 }
 
-server_download_table <- function(input) {
-  reactive({
-    names(uploaded_files_cache)
-  })
-}
-
 server_download_handler <- function(input) {
   downloadHandler(
     filename=function() {
       "curent_dataset.csv"
     },
     content=function(file) {
+      message(input$out_quote)
       write.table(curent_dataframe, file, row.names=FALSE,
         sep=input$out_sep,
-        quote=input$quote != ""
+        quote=input$out_quote == "TRUE"
       )
     }
   )
@@ -136,12 +139,11 @@ server_download_handler <- function(input) {
 server <- function(input, output) {
 
   ## upload section
-  output$contents <- server_upload(input)
+  output$contents <- server_upload_handler(input)
 
   # Downloadable csv of selected dataset
   output$downloadData <- server_download_handler(input)
 
 }
 
-# Create Shiny app
 shinyApp(ui, server)
