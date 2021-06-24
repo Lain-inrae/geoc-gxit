@@ -1,96 +1,111 @@
 library(shiny)
 
-# Define UI for data upload app ----
+curent_dataframe <- NULL
+
 ui <- fluidPage(
 
-  # App title ----
   titlePanel("Uploading Files"),
 
-  # Sidebar layout with input and output definitions ----
   sidebarLayout(
 
-    # Sidebar panel for inputs ----
     sidebarPanel(
 
-      # Input: Select a file ----
-      fileInput("file1", "Choose CSV File",
-                multiple = FALSE,
-                accept = c("text/csv",
-                         "text/comma-separated-values,text/plain",
-                         ".csv")),
+      fileInput(
+        "uploaded_file", "Choose CSV File",
+        multiple=FALSE,
+        accept=c(
+          "text/csv",
+          "text/comma-separated-values,text/plain",
+          ".csv"
+        )
+      ),
 
-      # Horizontal line ----
       tags$hr(),
+      tags$h5("Input format settings"),
 
-      # Input: Checkbox if file has header ----
       checkboxInput("header", "Header", TRUE),
 
-      # Input: Select separator ----
-      radioButtons("sep", "Separator",
-                   choices = c(Comma = ",",
-                               Semicolon = ";",
-                               Tab = "\t"),
-                   selected = ","),
+      radioButtons(
+        "sep", "Separator",
+        choices=c(
+          Comma=",",
+          Semicolon=";",
+          Tab="\t"
+        ),
+        selected=","
+      ),
 
-      # Input: Select quotes ----
-      radioButtons("quote", "Quote",
-                   choices = c(None = "",
-                               "Double Quote" = '"',
-                               "Single Quote" = "'"),
-                   selected = '"'),
+      radioButtons(
+        "quote", "Quote",
+        choices=c(
+          None="",
+          "Double Quote"='"',
+          "Single Quote"="'"
+        ),
+        selected='"'
+      ),
 
-      # Horizontal line ----
+      radioButtons(
+        "disp", "Display",
+        choices=c(
+          Head="head",
+          All="all"
+        ),
+        selected="head"
+      ),
+
       tags$hr(),
+      tags$h5("Output format settings"),
 
-      # Input: Select number of rows to display ----
-      radioButtons("disp", "Display",
-                   choices = c(Head = "head",
-                               All = "all"),
-                   selected = "head")
-
+      radioButtons(
+        "out_sep", "Separator",
+        choices=c(
+          Comma=",",
+          Semicolon=";",
+          Tab="\t"
+        ),
+        selected=","
+      ),
+      downloadButton("downloadData", "Download")
     ),
 
-    # Main panel for displaying outputs ----
-    mainPanel(
-
-      # Output: Data file ----
-      tableOutput("contents")
-
-    )
-
+    tableOutput("contents")
   )
 )
 
-# Define server logic to read selected file ----
-server <- function(input, output) {
+server_upload <- function(input) {
+  renderTable({
 
-  output$contents <- renderTable({
-
-    # input$file1 will be NULL initially. After the user selects
+    # input$uploaded_file will be NULL initially. After the user selects
     # and uploads a file, head of that data file by default,
     # or all rows if selected, will be shown.
 
-    req(input$file1)
+    req(input$uploaded_file)
 
     # when reading semicolon separated files,
     # having a comma separator causes `read.csv` to error
-    tryCatch(
-      {
-        df <- read.csv(input$file1$datapath,
-                 header = input$header,
-                 sep = input$sep,
-                 quote = input$quote)
-      },
-      error = function(e) {
+    tryCatch({
+      df <- read.csv(
+        input$uploaded_file$datapath,
+        header=input$header,
+        sep=input$sep,
+        quote=input$quote
+      )
+      curent_dataframe <<- read.csv(
+        input$uploaded_file$datapath,
+        header=TRUE,
+        sep=input$sep,
+        quote=input$quote
+      )
+    },
+      error=function(e) {
         # return a safeError if a parsing error occurs
         stop(safeError(e))
-      }
-    )
+    })
 
     if(input$disp == "head") {
       return(head(df))
-    }
-    else {
+    } else {
       return(df)
     }
 
@@ -98,5 +113,44 @@ server <- function(input, output) {
 
 }
 
-# Create Shiny app ----
+server_download_table <- function(input) {
+  reactive({
+    names(uploaded_files_cache)
+  })
+}
+
+server_download_handler <- function(input, datasetInput) {
+  downloadHandler(
+    filename=function() {
+      "curent_dataset.csv"
+    },
+    content=function(file) {
+      write.table(curent_dataframe, file, row.names=FALSE,
+        sep=input$out_sep,
+        quote=input$quote != ""
+      )
+    }
+  )
+}
+
+server <- function(input, output) {
+
+  ## upload section
+  output$contents <- server_upload(input)
+
+
+  ## Download section
+  # Reactive value for selected dataset
+  datasetInput <- server_download_table(input)
+  # Table of selected dataset
+  output$table <- renderTable({
+    datasetInput()
+  })
+
+  # Downloadable csv of selected dataset
+  output$downloadData <- server_download_handler(input, datasetInput)
+
+}
+
+# Create Shiny app
 shinyApp(ui, server)

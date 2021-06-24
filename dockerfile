@@ -22,6 +22,7 @@ RUN \
         apt-get update                                                                                         \
     &&  apt-get install -y --no-install-recommends                                                             \
          ed                                                                                                    \
+         procps                                                                                                \
          less                                                                                                  \
          locales                                                                                               \
          file                                                                                                  \
@@ -54,6 +55,8 @@ ARG LOG_PATH
 ENV LOG_PATH=$LOG_PATH
 ARG PORT
 ENV PORT=$PORT
+
+ENV PS1="$ "
 
 RUN mkdir -p $(dirname "${LOG_PATH}")
 EXPOSE $PORT

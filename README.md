@@ -40,7 +40,7 @@ Run
 ---
 
  - `make it ## run docker in interactive mode `
- - `make d ## run docker in deteched mode `
+ - `make d ## run docker in detached mode `
  - `make sh ## to connect to the docker while it's running `
  - `make log ## to show Xseeker's logs while it's running `
 
