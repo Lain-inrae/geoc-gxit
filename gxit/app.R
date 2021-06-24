@@ -23,10 +23,10 @@ ui <- fluidPage(
       tags$hr(),
       tags$h5("Input format settings"),
 
-      checkboxInput("header", "Header", TRUE),
+      checkboxInput("header", "Input has a header?", TRUE),
 
       radioButtons(
-        "sep", "Separator",
+        "sep", "Which separator caracters is used?",
         choices=c(
           Comma=",",
           Semicolon=";",
@@ -36,7 +36,7 @@ ui <- fluidPage(
       ),
 
       radioButtons(
-        "quote", "Quote",
+        "quote", "Which quoting character is used?",
         choices=c(
           None="",
           "Double Quote"='"',
@@ -46,10 +46,10 @@ ui <- fluidPage(
       ),
 
       radioButtons(
-        "disp", "Display",
+        "disp", "Display only first lines?",
         choices=c(
-          Head="head",
-          All="all"
+          Yes="head",
+          No="all"
         ),
         selected="head"
       ),
@@ -127,7 +127,6 @@ server_download_handler <- function(input) {
       "curent_dataset.csv"
     },
     content=function(file) {
-      message(input$out_quote)
       write.table(curent_dataframe, file, row.names=FALSE,
         sep=input$out_sep,
         quote=input$out_quote == "TRUE"
