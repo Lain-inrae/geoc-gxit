@@ -119,7 +119,7 @@ server_download_table <- function(input) {
   })
 }
 
-server_download_handler <- function(input, datasetInput) {
+server_download_handler <- function(input) {
   downloadHandler(
     filename=function() {
       "curent_dataset.csv"
@@ -138,17 +138,8 @@ server <- function(input, output) {
   ## upload section
   output$contents <- server_upload(input)
 
-
-  ## Download section
-  # Reactive value for selected dataset
-  datasetInput <- server_download_table(input)
-  # Table of selected dataset
-  output$table <- renderTable({
-    datasetInput()
-  })
-
   # Downloadable csv of selected dataset
-  output$downloadData <- server_download_handler(input, datasetInput)
+  output$downloadData <- server_download_handler(input)
 
 }
 
