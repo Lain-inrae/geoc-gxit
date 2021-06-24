@@ -1,6 +1,8 @@
 library(shiny)
 
+## The dataframe of the curent file.
 curent_dataframe <- NULL
+
 
 ui <- fluidPage(
 
@@ -21,12 +23,12 @@ ui <- fluidPage(
       ),
 
       tags$hr(),
-      tags$h5("Input format settings"),
+      tags$h3("Input format settings"),
 
-      checkboxInput("header", "Input has a header?", TRUE),
+      checkboxInput("has_a_header", "Input has a header?", TRUE),
 
       radioButtons(
-        "sep", "Which separator caracters is used?",
+        "input_sep", "Which separator caracters is used?",
         choices=c(
           Comma=",",
           Semicolon=";",
@@ -36,7 +38,7 @@ ui <- fluidPage(
       ),
 
       radioButtons(
-        "quote", "Which quoting character is used?",
+        "input_quote", "Which quoting character is used?",
         choices=c(
           None="",
           "Double Quote"='"',
@@ -46,7 +48,7 @@ ui <- fluidPage(
       ),
 
       radioButtons(
-        "disp", "Display only first lines?",
+        "dispplay_first_lines_only", "Display only first lines?",
         choices=c(
           Yes="head",
           No="all"
@@ -55,7 +57,7 @@ ui <- fluidPage(
       ),
 
       tags$hr(),
-      tags$h5("Output format settings"),
+      tags$h3("Output format settings"),
 
       radioButtons(
         "out_sep", "Separator",
@@ -77,7 +79,8 @@ ui <- fluidPage(
       downloadButton("downloadData", "Download")
     ),
 
-    tableOutput("contents")
+    tableOutput("parsed_csv_content")
+
   )
 )
 
@@ -95,15 +98,17 @@ server_upload_handler <- function(input) {
     tryCatch({
       df <- read.csv(
         input$uploaded_file$datapath,
-        header=input$header,
-        sep=input$sep,
-        quote=input$quote
+        header=input$has_a_header,
+        sep=input$input_sep,
+        quote=input$input_quote
       )
+      ## We don't want a fake header for the output file.
+      ## So, we consider the inpout file has a header.
       curent_dataframe <<- read.csv(
         input$uploaded_file$datapath,
         header=TRUE,
-        sep=input$sep,
-        quote=input$quote
+        sep=input$input_sep,
+        quote=input$input_quote
       )
     },
       error=function(e) {
@@ -111,7 +116,7 @@ server_upload_handler <- function(input) {
         stop(safeError(e))
     })
 
-    if(input$disp == "head") {
+    if(input$dispplay_first_lines_only == "head") {
       return(head(df))
     } else {
       return(df)
@@ -123,11 +128,14 @@ server_upload_handler <- function(input) {
 
 server_download_handler <- function(input) {
   downloadHandler(
-    filename=function() {
-      "curent_dataset.csv"
-    },
-    content=function(file) {
-      write.table(curent_dataframe, file, row.names=FALSE,
+    filename="curent_dataset.csv",
+    content=function(output_file) {
+      ## We write the content of the original file,
+      ## But with the sep and quotes defined in the form
+      write.table(
+        curent_dataframe,
+        output_file,
+        row.names=FALSE,
         sep=input$out_sep,
         quote=input$out_quote == "TRUE"
       )
@@ -138,9 +146,9 @@ server_download_handler <- function(input) {
 server <- function(input, output) {
 
   ## upload section
-  output$contents <- server_upload_handler(input)
+  output$parsed_csv_content <- server_upload_handler(input)
 
-  # Downloadable csv of selected dataset
+  # Downloadable csv section
   output$downloadData <- server_download_handler(input)
 
 }
