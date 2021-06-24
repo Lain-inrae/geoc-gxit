@@ -5,7 +5,7 @@
         <!-- <container type="docker">emetabohub/geoc-gxit:1.0.0</container> -->
     </requirements>
     <entry_points>
-        <entry_point name="geoc-gxit visualisation of $infile.display_name" requires_domain="True">
+        <entry_point name="geoc demo gxit" requires_domain="True">
             <port>8765</port>
             <url>/</url>
         </entry_point>
@@ -15,7 +15,6 @@
     ]]>
     </command>
     <inputs>
-        <param name="infile" type="data" format="binary" label="An tar.gz file containing nmr spectra"/>
     </inputs>
     <outputs>
         <data name="file_output" format="txt" />
