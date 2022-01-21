@@ -1,12 +1,13 @@
 
 
-docker_name=tuto-gxit-01
+docker_name=first-gxit
+docker_repo=ancelete
 internal_port=8765
 port=-p 127.0.0.1:8765:$(internal_port)
 log_path=/var/log/tuto-gxit-01.log
 WEB_TAG=1.0.0
-WEB_TARGET=geoc/${docker_name}:${WEB_TAG}
-WEB_LATEST=geoc/${docker_name}:latest
+WEB_TARGET=${docker_repo}/${docker_name}:${WEB_TAG}
+WEB_LATEST=${docker_repo}/${docker_name}:latest
 
 re:clean docker
 
