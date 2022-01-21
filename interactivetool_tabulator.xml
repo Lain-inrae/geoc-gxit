@@ -1,11 +1,10 @@
-<tool id="interactive_tool_geoc-gxit" tool_type="interactive" name="geoc-gxit" version="1.0.0">
-    <description>Tuto tool from geoc</description>
+<tool id="interactive_tool_tabulator" tool_type="interactive" name="Tabulator" version="1.0.0">
+    <description>Tuto tool for Gxit</description>
     <requirements>
-        <container type="docker">tuto-gxit-01:latest</container>
-        <!-- <container type="docker">emetabohub/geoc-gxit:1.0.0</container> -->
+        <container type="docker">ancelete/first-gxit:latest</container>
     </requirements>
     <entry_points>
-        <entry_point name="geoc demo gxit" requires_domain="True">
+        <entry_point name="first gxit" requires_domain="True">
             <port>8765</port>
             <url>/</url>
         </entry_point>
@@ -30,7 +29,7 @@
        <citation type="bibtex">
        @misc{
             author       = {Lain Pavot - lain.pavot@inrae.fr },
-            title        = {{geoc-gxit -  A tool to visualise tsv/csv files }},
+            title        = {{first-gxit -  A tool to visualise tsv/csv files }},
             publisher    = {INRAE},
             url          = {}
         }
