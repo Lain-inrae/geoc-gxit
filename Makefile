@@ -1,5 +1,3 @@
-
-
 docker_name=first-gxit
 docker_repo=ancelete
 internal_port=8765
@@ -55,4 +53,3 @@ log:
 
 
 .PHONY:log R
-

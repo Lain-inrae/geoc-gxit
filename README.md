@@ -1,9 +1,7 @@
-
-
 GxIT
 =======
 
-This tool is a very simple GxIT, witch code's based on:
+This tool is a very simple GxIT, with code based on:
  - https://github.com/rstudio/shiny-examples/blob/master/001-hello/app.R
  - https://github.com/rstudio/shiny-examples/blob/master/009-upload/app.R
  - https://github.com/rstudio/shiny-examples/blob/master/010-download/app.R
@@ -52,4 +50,3 @@ Metadata
  - **@version**: 1.0.0
  - **@authors**: Lain Pavot · lain.pavot@inrae.fr · https://github.com/Lain-inrae
  - **@date creation**: 21/06/2021
-
