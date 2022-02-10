@@ -28,7 +28,7 @@ ui <- fluidPage(
       checkboxInput("has_a_header", "Input has a header?", TRUE),
 
       radioButtons(
-        "input_sep", "Which separator caracters is used?",
+        "input_sep", "Which separator character is used?",
         choices=c(
           Comma=",",
           Semicolon=";",
