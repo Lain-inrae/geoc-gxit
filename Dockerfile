@@ -43,4 +43,4 @@ RUN mkdir -p $(dirname "${LOG_PATH}")
 EXPOSE $PORT
 COPY ./gxit/app.R /srv/shiny-server/
 
-CMD ["exec", "shiny-server", "2>&1", ">", "${LOG_PATH}"]
+CMD "exec shiny-server 2>&1 > ${LOG_PATH}"
