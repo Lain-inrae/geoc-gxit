@@ -4,7 +4,7 @@ FROM rocker/shiny
 # set author
 MAINTAINER Lain Pavot <lain.pavot@inra.fr>
 
-## we copy the installer and run it before copying the entier project to prevent
+## we copy the installer and run it before copying the entire project to prevent
 ## reinstalling everything each time the project has changed
 
 COPY ./gxit/install.R /tmp/
@@ -31,7 +31,7 @@ RUN \
 # inside we will find our Shiny app log file:
 #     docker run -p 8888:8888 -e LOG_PATH=/tmp/shiny/gxit.log -v $PWD/log:/tmp/shiny <container_name>
 
-ARG PORT=8888
+ARG PORT=3838
 ARG LOG_PATH=/tmp/gxit/gxit.log
 
 ENV LOG_PATH=$LOG_PATH
@@ -41,5 +41,6 @@ ENV PORT=$PORT
 
 RUN mkdir -p $(dirname "${LOG_PATH}")
 EXPOSE $PORT
-COPY ./gxit /gxit
-CMD R -e "shiny::runApp('/gxit', host='0.0.0.0', port=${PORT})" 2>&1 > "${LOG_PATH}"
+COPY ./gxit/app.R /srv/shiny-server/
+
+CMD ["exec", "shiny-server", "2>&1"]
