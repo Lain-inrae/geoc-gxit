@@ -5,12 +5,12 @@
     </requirements>
     <entry_points>
         <entry_point name="first gxit" requires_domain="True">
-            <port>3838</port>
+            <port>8765</port>
             <url>/</url>
         </entry_point>
     </entry_points>
     <command><![CDATA[
-        exec shiny-server 2>&1
+        exec shiny-server 2>&1 > \${LOG_PATH}
     ]]>
     </command>
     <inputs>

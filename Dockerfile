@@ -31,11 +31,18 @@ RUN \
 # inside we will find our Shiny app log file:
 #     docker run -p 8888:8888 -e LOG_PATH=/tmp/shiny/gxit.log -v $PWD/log:/tmp/shiny <container_name>
 
-ARG PORT=3838
-ARG LOG_PATH=/tmp/gxit/gxit.log
+ARG PORT=8765
+ARG LOG_PATH=/tmp/gxit.log
 
 ENV LOG_PATH=$LOG_PATH
 ENV PORT=$PORT
+
+# ------------------------------------------------------------------------------
+
+# Edit shiny-server config
+RUN cat /etc/shiny-server/shiny-server.conf \
+    | sed "s/3838/${PORT}/" > /etc/shiny-server/shiny-server.conf.1
+RUN mv /etc/shiny-server/shiny-server.conf.1 /etc/shiny-server/shiny-server.conf
 
 # ------------------------------------------------------------------------------
 
@@ -43,4 +50,4 @@ RUN mkdir -p $(dirname "${LOG_PATH}")
 EXPOSE $PORT
 COPY ./gxit/app.R /srv/shiny-server/
 
-CMD "exec shiny-server 2>&1 > ${LOG_PATH}"
+CMD ["/bin/sh", "-c", "shiny-server > ${LOG_PATH} 2>&1"]
