@@ -1,7 +1,7 @@
 docker_name=first-gxit
 docker_repo=ancelete
-internal_port=8765
-port=-p 127.0.0.1:8765:$(internal_port)
+internal_port=3838
+port=-p 127.0.0.1:3838:$(internal_port)
 log_path=/var/log/tuto-gxit-01.log
 WEB_TAG=1.0.0
 WEB_TARGET=${docker_repo}/${docker_name}:${WEB_TAG}

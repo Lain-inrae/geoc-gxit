@@ -24,7 +24,7 @@ Deploy
 Test
 ----
  - `make it`
- - `## Then go to 127.0.0.1:8765`
+ - `## Then go to 127.0.0.1:3838`
 
 
 Update
